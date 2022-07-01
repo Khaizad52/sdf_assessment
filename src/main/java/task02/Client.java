@@ -28,31 +28,60 @@ public class Client {
             try{
                 response = ois.readUTF();
 
+                String requestID = null;
+                float average = 0;
+
                 if(response != null){
                     String[] value = response.split(" ");
-                    String requestID = value[0];
+                    requestID = value[0];
                     String num = value[1];
                     System.out.println(requestID);
                     System.out.println(num);
 
-                    String[] numList = num.split(",");
-                    LinkedList<Integer> intList = new LinkedList<>();
+                    String[] numString = num.split(",");
+                    LinkedList<Integer> intLL = new LinkedList<>();
 
                     int total =0;
-                    float average = 0;
-                    for(String combine: numList){
+
+                    for(String individual: numString){
                         try{
-                            int numbers = Integer.parseInt(combine);
+                            int numbers = Integer.parseInt(individual);
                             total = total + numbers;
-                            intList.add(numbers);
+                            intLL.add(numbers);
 
                         }catch(NumberFormatException ex){
                             ex.printStackTrace();
                         }
-                    average =(float)total/intList.size();
-                    System.out.println(average);
+                    average =(float)total/(intLL.size());
                     }
+                    System.out.println(average);
+
                 }
+
+                oos.writeUTF(requestID);
+                oos.flush();
+
+                oos.writeUTF("Khairul Haizad Bin Mahadi");
+                oos.flush();
+
+                oos.writeUTF("1khairulh@gmail.com");
+                oos.flush();
+
+                oos.writeFloat(average);
+                oos.flush();
+
+                boolean reply = ois.readBoolean();
+
+                if(reply == true){
+                    System.out.println("SUCCESS");
+                }else if(reply == false){
+                    System.out.println("FAILED");
+                    ois.readUTF();
+                }
+
+                os.close();
+                is.close();
+
 
         }catch(UnknownHostException e){
             System.out.println("Server not found: " + e.getMessage());
